@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+		*{
+			cursor: pointer;
+		}
+		#shopTable{
+			width: 80%;
+			margin: 20px auto;
+		}
+		table{
+			width: 80%;
+			border: 1px solid #CCCCCC;
+			border-collapse: collapse;
+		}
+		table tr td{
+			border:1px solid #CCCCCC;
+			padding: 10px;
+		}
+		input[type="button"]{
+			border: 1px solid #CCCCCC;
+			background: #eee;
+			padding: 6px 12px;
+			margin: 0 10px;
+		}
+		img{
+		width:60px;
+		height:60px;
+		padding-left: 45px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="shopTable">
+			<table>
+				<thead>
+					<tr>
+						<td>全选</td>
+						<td>产品名称</td>
+						<td>数量</td>
+						<td>单价</td>
+						<td>总价</td>
+						<td>操作</td>
+					</tr>					
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="checkbox" name="chklist"></td>
+						<td><span><img src="img/10.jpg"></span></td>
+						<td>
+							<span class="reduce">-</span>
+							<input name="nums" type="text" value="1">
+							<span class="add">+</span>
+						</td>
+						<td><span class="PrePrice">88</span></td>
+						<td><span class="price"></span></td>
+						<td><span class="delete">删除</span></td>
+					</tr>
+					
+					<tr>
+						<td><input type="checkbox" name="chklist"></td>
+						<td><span><img src="img/111.jpg"></span></td>
+						<td>
+							<span class="reduce">-</span>
+							<input name="nums" type="text" value="1">
+							<span class="add">+</span>
+						</td>
+						<td><span class="PrePrice">99</span></td>
+						<td><span class="price"></span></td>
+						<td><span class="delete">删除</span></td>
+					</tr>
+					
+					<tr>
+						<td><input type="checkbox" name="chklist"></td>
+						<td><span><img src="img/44.jpg"></span></td>
+						<td>
+							<span class="reduce">-</span>
+							<input name="nums" type="text" value="1">
+							<span class="add">+</span>
+						</td>
+						<td><span class="PrePrice">0</span></td>
+						<td><span class="price"></span></td>
+						<td><span class="delete">删除</span></td>
+					</tr>
+					
+					<tr>
+						<td><input type="checkbox" name="chklist"></td>
+						<td><span><img src="img/45.jpg"></span></td>
+						<td>
+							<span class="reduce">-</span>
+							<input name="nums" type="text" value="1">
+							<span class="add">+</span>
+						</td>
+						<td><span class="PrePrice">53</span></td>
+						<td><span class="price"></span></td>
+						<td><span class="delete">删除</span></td>
+					</tr>
+					
+					<tr>
+						<td><input type="checkbox" name="chklist"></td>
+						<td><span><img src="img/46.jpg"></span></td>
+						<td>
+							<span class="reduce">-</span>
+							<input name="nums" type="text" value="1">
+							<span class="add">+</span>
+						</td>
+						<td><span class="PrePrice">999</span></td>
+						<td><span class="price"></span></td>
+						<td><span class="delete">删除</span></td>
+					</tr>
+					
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="3">
+							<input id="delet" type="button" value="全选">
+							<input id="byDelet" type="button" value="反选">
+							<input id="clearAll" type="button" value="删除选中">
+						</td>
+						<td>
+							总数量：<span id="total"></span>
+						</td>
+						<td>
+							总价：<span id="ProPrice"></span>
+						</td>
+						<td>
+							<input type="button" value="结算">
+						</td>
+					</tr>
+				</tfoot>
+				
+			</table>
+			
+			
+			
+		</div>
+		<script>
+			var Tbody=document.querySelector("tbody");
+			var delet=document.querySelector("#delet");
+			var byDelet=document.querySelector("#byDelet");
+			var clearAll=document.querySelector("#clearAll");
+			
+			var total=document.querySelector("#total"); //获取总数量span
+			//删除选中
+			clearAll.onclick=function(){
+				var chklist=document.querySelectorAll("tbody input[type='checkbox']:checked");
+				for (var i=0;i<chklist.length;i++) {
+					Tbody.removeChild(chklist[i].parentNode.parentNode);
+				}
+			}
+			//全选
+			delet.onclick=function(){
+				//得到所有的checkbox
+				//checkbox  有一个属性   复选框.checked=true;    选中的状态
+				var chklist1=document.querySelectorAll("tbody input[type='checkbox']");
+				console.log(chklist1);
+				for (var i=0;i<chklist1.length;i++) {
+					chklist1[i].checked=true;
+				}
+			}
+			//反选
+			byDelet.onclick=function(){
+				var chklist1=document.querySelectorAll("tbody input[type='checkbox']");
+				for (var i=0;i<chklist1.length;i++) {
+					chklist1[i].checked=!chklist1[i].checked;
+				}
+			}
+			//======= +  -  删除当前行 功能  ============
+			//+事件改变input的value值
+			//-事件改变的是input的value值
+			//e --》event对象  window-->最大对象  (共6个)
+			
+			var tr=document.querySelectorAll("tbody tr");
+			
+			for (var i=0;i<tr.length;i++) {
+				tr[i].onclick=function(e){
+					e=e || window.event;
+					var el=e.target;  //获取事件对象的元素
+					var cls=el.className;  //获取到事件对象的className
+					//先获取要操作的input
+					var input=this.getElementsByTagName("input")[1];  //数量的输入
+					var val=parseInt(input.value);  //number数据类型  强制转换
+					var Span=this.getElementsByTagName("span")[5];
+					switch(cls){  //判断获取到是加  还是减的className
+						case "reduce":
+							input.value=val-1;
+							break;
+						case "add":
+						   input.value=val+1;
+						   break;
+						   
+						case "delete":
+							Tbody.removeChild(Span.parentNode.parentNode);
+						
+					}
+					
+					Total();
+					Price();
+					Preprice();
+				}//点击结束
+				
+				
+			}
+			//用来写总数量
+					function Total(){
+						var inputs=document.querySelectorAll("tbody input[type='text']");
+						var t=0;
+						for (var i=0;i<inputs.length;i++) {
+							t+=parseInt(inputs[i].value);
+						}
+						total.innerHTML=t;
+						
+					}
+					Total();
+				//用来写价格
+			function Price(){
+				var inputs=document.querySelectorAll("tbody input[type='text']");
+				var prices=document.querySelectorAll(".price");
+				var preprice=document.querySelectorAll(".PrePrice");
+				for(var i=0;i<inputs.length;i++){
+				prices[i].innerHTML=parseInt(inputs[i].value*preprice[i].innerHTML);
+				}
+			}
+			Price();
+			
+			function Preprice(){
+			var price=document.querySelector("#ProPrice"); 
+			var inputs=document.querySelectorAll("tbody input[type='text']");
+			var prices=document.querySelectorAll(".price");
+			var preprice=document.querySelectorAll(".PrePrice");
+			var s=0;
+			for(var i=0;i<inputs.length;i++){
+			s+=parseInt(parseInt(inputs[i].value)*parseInt(preprice[i].innerHTML));
+			}
+			price.innerHTML=s;
+			}
+			Preprice();
+			
+		</script>
+		
+		
+		
+	</body>
+</html>
